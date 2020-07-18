@@ -37,7 +37,7 @@ namespace shoppingapp.Controllers
             List<Sales> sList = await _context.Sales.ToListAsync();
             List<Store> stList = await _context.Store.ToListAsync();
             List<Product> pList = await _context.Product.ToListAsync();
-            
+
 
 
 
@@ -51,7 +51,7 @@ namespace shoppingapp.Controllers
                 isales.StoreId = sale.StoreId;
                 foreach (var customer in cList)
                 {
-                    if(sale.CustomerId == customer.Id)
+                    if (sale.CustomerId == customer.Id)
                     {
                         isales.CustomerName = customer.Name;
                     }
@@ -83,15 +83,15 @@ namespace shoppingapp.Controllers
 
 
 
-                //.Include(s => s.Customer.Id)
+            //.Include(s => s.Customer.Id)
 
-                //.ToListAsync()
-                //.Include(s => s.Store.Id)
-                //.Include(s => s.Store)
+            //.ToListAsync()
+            //.Include(s => s.Store.Id)
+            //.Include(s => s.Store)
 
-                //.Include(s => s.Product)
-                //.ToListAsync();
-            }
+            //.Include(s => s.Product)
+            //.ToListAsync();
+        }
 
         // GET: api/Sales/5
         [HttpGet("{id}")]
@@ -111,12 +111,46 @@ namespace shoppingapp.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSales(int id, Sales sales)
+        public async Task<IActionResult> PutSales(int id, Saless saless)
         {
-            if (id != sales.Id)
+            if (id != saless.Id)
             {
                 return BadRequest();
             }
+
+            var sales = new Sales();
+
+            List<Customer> cList = await _context.Customer.ToListAsync();
+            List<Store> stList = await _context.Store.ToListAsync();
+            List<Product> pList = await _context.Product.ToListAsync();
+
+            sales.Id = id;
+            sales.DateSold = Convert.ToDateTime(saless.DateSold);
+
+            foreach (var customer in cList)
+            {
+                if (saless.CustomerName == customer.Name)
+                {
+                    sales.CustomerId = customer.Id;
+                }
+            }
+
+            foreach (var store in stList)
+            {
+                if (saless.StoreName == store.Name)
+                {
+                    sales.StoreId = store.Id;
+                }
+            }
+
+            foreach (var product in pList)
+            {
+                if (saless.ProductName == product.Name)
+                {
+                    sales.ProductId = product.Id;
+                }
+            }
+
 
             _context.Entry(sales).State = EntityState.Modified;
 
